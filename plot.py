@@ -24,21 +24,21 @@ def getTraceFiles (tracePath):
 def plotgraph(param_list):
 
         pylab.clf()
-        gettitlestr =''
         l =  param_list[0].split('/')[-1].split('_')[2:]
-        for i in l:
-            gettitlestr += i
+        gettitlestr = ''.join(l)
 
         datalist = [ ( pylab.loadtxt(filename)) for filename in param_list ]
-        labels = ['mobile','desktop','app']
+        #labels = ['mobile','desktop','app']
         for i,data in enumerate(datalist):
-            pylab.plot( data[:,0], data[:,1], label = labels[i] )
+            l = param_list[i].split('/')[-1].split('_')[:2]   
+            label_name = ''.join(l)
+            pylab.plot( data[:,0], data[:,1], label = label_name)
 
         pylab.legend()
         pylab.title(gettitlestr)
         pylab.xlabel("X Axis Label")
         pylab.ylabel("Y Axis Label")
-        pylab.savefig("./images/"+gettitlestr+".png")
+        pylab.savefig("/home/dhruv/Desktop/BTP/images/"+gettitlestr+".png")
 
 if __name__ == "__main__":
     tracefiles =  getTraceFiles(p.BURSTS_PLOT_PATH)

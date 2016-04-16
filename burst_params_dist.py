@@ -14,7 +14,7 @@ def analyzeBurstParams (appName, traceName):
     if not os.path.exists(burstParamsPlotPath):
         os.makedirs(burstParamsPlotPath)
     bp_burstsize = os.path.join(burstParamsPlotPath,traceName+"_burstsize.plot")
-    bp_burstduration = os.path.join(burstParamsPlotPath,traceName+"_burstduration.plot")
+   # bp_burstduration = os.path.join(burstParamsPlotPath,traceName+"_burstduration.plot")
     bp_iburstat = os.path.join(burstParamsPlotPath,traceName+"_interburstarrivaltime.plot")
     bp_avgpktsize = os.path.join(burstParamsPlotPath,traceName+"_avgpktsize.plot")
     bp_avgpktiat = os.path.join(burstParamsPlotPath,traceName+"_avgpktiat.plot")
@@ -22,11 +22,11 @@ def analyzeBurstParams (appName, traceName):
     write1 = open(bp_burstsize,"w")
     p1 = []
     c1 = 0
-
-    write2 = open(bp_burstduration,"w")
+    
+    #write2 = open(bp_burstduration,"w")
     p2 = []
     c2 = 0
-
+    
     write3 = open(bp_iburstat,"w")
     p3 = []
     c3 = 0
@@ -169,11 +169,11 @@ def analyzeBurstParams (appName, traceName):
     for i in range(0,len(p1)):
         write1.write(str(i)+" "+str(p1[i])+"\n")
     write1.close()
-
+    '''
     for i in range(0,len(p2)):
         write2.write(str(i)+" "+str(p2[i])+"\n")
     write2.close()
-    
+    '''
     for i in range(0,len(p3)):
         write3.write(str(i)+" "+str(p3[i])+"\n")
     write3.close()
@@ -194,7 +194,7 @@ def analyzeBurstParams (appName, traceName):
     cdf_bp_avgpktiat = os.path.join(burstParamsPlotPath,traceName+"_avgpktiat_cdf.plot")
 
     fpw1 = open(cdf_bp_burstsize,'w')
-    fpw2 = open(cdf_bp_burstduration, 'w')
+    #fpw2 = open(cdf_bp_burstduration, 'w')
     fpw3 = open(cdf_bp_iburstat, 'w')
     fpw4 = open(cdf_bp_avgpktsize, 'w')
     fpw5 = open(cdf_bp_avgpktiat, 'w')
@@ -202,11 +202,11 @@ def analyzeBurstParams (appName, traceName):
     for i in range(0,len(cdfBurstSize)):
         fpw1.write(str(i) + " " + str(cdfBurstSize[i][0]) + " " + str(cdfBurstSize[i][1]) + "\n")
     fpw1.close()
-
+    '''
     for i in range(0,len(cdfBurstDuration)):
         fpw2.write(str(i) + " " + str(cdfBurstDuration[i][0]) + " " + str(cdfBurstDuration[i][1]) + "\n")
     fpw2.close()
-
+    '''
     for i in range(0,len(cdfBurstIAT)):
         fpw3.write(str(i) + " " + str(cdfBurstIAT[i][0]) + " " + str(cdfBurstIAT[i][1]) + "\n")
     fpw3.close()

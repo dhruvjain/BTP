@@ -1,6 +1,6 @@
 import os
 
-PROJECT_PARENT_PATH = "/home/dhruv/Desktop/BTP/Code"
+PROJECT_PARENT_PATH = "/home/dhruv/Desktop/BTP"
 #PROJECT_PARENT_PATH = "/home/satadal/2015_JSAC/AdHoc"
 TRACE_PARENT_PATH = os.path.join(PROJECT_PARENT_PATH,"Traces")
 PCAP_PARENT_PATH = os.path.join(TRACE_PARENT_PATH,"Packet.Capture")

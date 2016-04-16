@@ -4,7 +4,6 @@ import operator
 import numpy as np
 import os
 import pickle
-#import datactrl_static_train as dcst
 import packetsize_freq_dist as pfd
 import matplotlib.pyplot as plt 
 
@@ -19,14 +18,18 @@ def getTotalIATFreq(absFilePath):
     dataPackets = []
     readfp = open(absFilePath,'r')
     lines = readfp.readlines()
+
+    startTime = 0*multiplier
+    endTime = 1000000*multiplier
     for line in lines:
         if (pfd.isDataPacket(line)):
-            dataPackets.append(line) 
+            pkt_at = int(np.ceil(float(line.split(',')[1])*multiplier))
+            if pkt_at >= startTime and pkt_at <= endTime:
+                dataPackets.append(line) 
 
-    #print dataPackets
     startTime = int(np.ceil(float(dataPackets[0].split(',')[1])*multiplier))  #[1] is AT
     endTime = int(np.ceil(float(dataPackets[len(dataPackets)-1].split(',')[1])*multiplier))
-    #endTime = 100*multiplier
+
     print "Endtime is ", endTime
     prevTime = startTime
 
@@ -123,11 +126,12 @@ def divideIntoBursts(dataPackets, height, tick, min_pkts):
     #Here I am storing the start time and end time of each bursts
     for index, pkt in enumerate(dataPackets[1:]):
         currTime = int(np.ceil(float(pkt.split(',')[1])*multiplier))
+
         if currTime<endTime:
             No_of_pkts += 1
             prevTime = currTime
         else:
-            if No_of_pkts < height and beg == 1:
+            if (No_of_pkts < height and beg == 1) or (currTime >= (prevTime+tick)):
                 if total_pkts >= min_pkts:
                     bursts.append([startTime*1.0/multiplier, prevTick_end*1.0/multiplier])
                 startTime = currTime
@@ -212,7 +216,8 @@ def main():
                     print filePath
                     for i in bursts:
                         print i
-                    
+
+                    print "Total no. of busts = ", len(bursts)
                     new_allBursts = change_allBursts(allBursts)
                     #this changes string to list of appropriate formats
 

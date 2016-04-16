@@ -32,7 +32,13 @@ def plotgraph(param_list):
         for i,data in enumerate(datalist):
             l = param_list[i].split('/')[-1].split('_')[:2]   
             label_name = ''.join(l)
-            pylab.plot( data[:,0], data[:,1], label = label_name)
+            if label_name.startswith('desktop'):
+                color = 'r'
+            elif label_name.startswith('app'):
+                color = 'g'
+            elif label_name.startswith('mob'):
+                color = 'b'
+            pylab.plot( data[:,0], data[:,1], color)
 
         pylab.legend()
         pylab.title(gettitlestr)

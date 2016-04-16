@@ -6,91 +6,73 @@ import operator
 
 #####################################
 
+def writeIntoFile(fileptr, data):
+    for i in range(0,len(data)):
+        fileptr.write(str(i)+" "+str(data[i])+"\n")
+    fileptr.close()
+
+#####################################
+
 def analyzeBurstParams (appName, traceName):
+    
+    p1 = p2 = p3 = p4 = p5 = []
     
     burstPath = os.path.join(p.BURSTS_PARENT_PATH,appName,traceName+".burst")
     bursts = pickle.load(open(burstPath,"rb"))
     burstParamsPlotPath = os.path.join(p.BURSTS_PLOT_PATH,traceName)
     if not os.path.exists(burstParamsPlotPath):
         os.makedirs(burstParamsPlotPath)
+
     bp_burstsize = os.path.join(burstParamsPlotPath,traceName+"_burstsize.plot")
-   # bp_burstduration = os.path.join(burstParamsPlotPath,traceName+"_burstduration.plot")
+    bp_burstduration = os.path.join(burstParamsPlotPath,traceName+"_burstduration.plot")
     bp_iburstat = os.path.join(burstParamsPlotPath,traceName+"_interburstarrivaltime.plot")
     bp_avgpktsize = os.path.join(burstParamsPlotPath,traceName+"_avgpktsize.plot")
     bp_avgpktiat = os.path.join(burstParamsPlotPath,traceName+"_avgpktiat.plot")
 
     write1 = open(bp_burstsize,"w")
-    p1 = []
-    c1 = 0
-    
-    #write2 = open(bp_burstduration,"w")
-    p2 = []
-    c2 = 0
-    
+    write2 = open(bp_burstduration,"w")
     write3 = open(bp_iburstat,"w")
-    p3 = []
-    c3 = 0
-
     write4 = open(bp_avgpktsize,"w")
-    p4 = []
-    c4 = 0
-
     write5 = open(bp_avgpktiat,"w")
-    p5 = []
-    c5 = 0
-
-    for burst in bursts:
-        if (len(burst)<=20):
-            bursts.remove(burst)
-
+    
     prevBurstEndTime = 0
-    c = 0
     for burst in bursts:
-        #print(len(burst))
         burstSize = 0
         totalIAT = 0
-        c = 0
-        for packet in burst:
-            if c>0:
-                totalIAT += packet[1]
+
+        for index, packet in enumerate(burst[1:]):
+            totalIAT += burst[index+1][1] - burst[index][1]
             burstSize += packet[3]
-            c += 1
 
         pktCount = len(burst)
-        #print("Packet Count: "+str(pktCount))
         avgPktSize = burstSize/pktCount
-        if pktCount>1:
-            avgIAT = totalIAT/(pktCount-1)
-        else:
-            avgIAT = 0
+        avgIAT = totalIAT/(pktCount-1)
         burstDuration = burst[len(burst)-1][1] - burst[0][1]
-        if (not (prevBurstEndTime==0)) and (burst[0][1] > prevBurstEndTime):
+
+        if (burst[0][1] > prevBurstEndTime):
             burstIAT = burst[0][1] - prevBurstEndTime
-        else:
-            burstIAT = 0
-        prevBurstEndTime = burst[0][1]
 
-        if burstSize > 1:
-            p1.append(burstSize)
-        if burstDuration > 1:
-            p2.append(burstDuration)
-        if burstIAT > 1:
-            p3.append(burstIAT)
-        if avgPktSize > 1:
-            p4.append(avgPktSize)
-        if avgIAT > 1:
-            p5.append(avgIAT)
+        prevBurstEndTime = burst[len(burst)-1][1]
 
-        #writefp.write(str(c)+" "+str(burstSize)+" "+str(burstDuration)+" "+str(burstIAT)+" "+str(avgPktSize)+" "+str(avgIAT)+"\n")
-        c += 1
+        p1.append(burstSize)
+        p2.append(burstDuration)
+        p3.append(burstIAT)
+        p4.append(avgPktSize)
+        p5.append(avgIAT)
 
     p1.sort() # Burst Size
     p2.sort() # Burst Duration
     p3.sort() # Burst IAT
     p4.sort() # Avg. Packet Size
     p5.sort() # Avg. IAT
-
     
+    writeIntoFile(write1, p1)
+    writeIntoFile(write2, p2)
+    writeIntoFile(write3, p3)
+    writeIntoFile(write4, p4)
+    writeIntoFile(write5, p5)
+
+    '''
     dictBurstSize = defaultdict(int)
     for dp in p1:
         dictBurstSize[dp] += 1
@@ -166,25 +148,7 @@ def analyzeBurstParams (appName, traceName):
         cdfAvgIAT.append((dataPoint[0],cdf))
 
     
-    for i in range(0,len(p1)):
-        write1.write(str(i)+" "+str(p1[i])+"\n")
-    write1.close()
-    '''
-    for i in range(0,len(p2)):
-        write2.write(str(i)+" "+str(p2[i])+"\n")
-    write2.close()
-    '''
-    for i in range(0,len(p3)):
-        write3.write(str(i)+" "+str(p3[i])+"\n")
-    write3.close()
-
-    for i in range(0,len(p4)):
-        write4.write(str(i)+" "+str(p4[i])+"\n")
-    write4.close()
-
-    for i in range(0,len(p5)):
-        write5.write(str(i)+" "+str(p5[i])+"\n")
-    write5.close()
+    
     
 
     cdf_bp_burstsize = os.path.join(burstParamsPlotPath,traceName+"_burstsize_cdf.plot")
@@ -202,11 +166,11 @@ def analyzeBurstParams (appName, traceName):
     for i in range(0,len(cdfBurstSize)):
         fpw1.write(str(i) + " " + str(cdfBurstSize[i][0]) + " " + str(cdfBurstSize[i][1]) + "\n")
     fpw1.close()
-    '''
+    
     for i in range(0,len(cdfBurstDuration)):
         fpw2.write(str(i) + " " + str(cdfBurstDuration[i][0]) + " " + str(cdfBurstDuration[i][1]) + "\n")
     fpw2.close()
-    '''
+    
     for i in range(0,len(cdfBurstIAT)):
         fpw3.write(str(i) + " " + str(cdfBurstIAT[i][0]) + " " + str(cdfBurstIAT[i][1]) + "\n")
     fpw3.close()
@@ -218,7 +182,7 @@ def analyzeBurstParams (appName, traceName):
     for i in range(0,len(cdfAvgIAT)):
         fpw5.write(str(i) + " " + str(cdfAvgIAT[i][0]) + " " + str(cdfAvgIAT[i][1]) + "\n")
     fpw5.close()
-
+    '''
     return
 
 #####################################

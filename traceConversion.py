@@ -49,9 +49,7 @@ def convertPCAPtoCSV (traceFilePaths):
 def main():
     # Get path to the input trace repository
     tracePath = p.PCAP_PARENT_PATH
-    #print "tracePath: "+tracePath
     traceFilePaths = getTraceFiles(tracePath)
-    print "traceFilePaths: ", traceFilePaths
     successStatus = convertPCAPtoCSV(traceFilePaths)
     if (successStatus):
         print("Conversion completed successfully.")

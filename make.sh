@@ -1,2 +1,5 @@
 #!/usr/bin/env bash
-python traceConversion.py && python interarrivaltime_freq_dist.py && python packetsize_freq_dist.py && python burst_identification.py && python burst_params_dist.py
+rm -r /Users/swapnil/Downloads/BTP/Traces/Trace.Bursts/Youtube/*
+rm -r /Users/swapnil/Downloads/BTP/Traces/Burst.Parameters/*
+rm -r /Users/swapnil/Downloads/BTP/Traces/Images/*
+rm -r /Users/swapnil/Downloads/BTP/Traces/Comma.Separated.Values/Youtube/*
